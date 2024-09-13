@@ -43,6 +43,14 @@ exports.allAccount = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+exports.allAccountADmin = async (req, res) => {
+    try {
+        const accounts = await BuySellAccountList.find();
+        res.status(200).json(accounts);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 
 exports.idGetAccount = async (req, res) => {
     try {

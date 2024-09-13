@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'Gmail', // You can use any email service provider like Gmail, Yahoo, etc.
+    service: 'Gmail', 
     auth: {
-        user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS  // Your email password or app-specific password
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS 
     }
 });
 
@@ -14,13 +14,13 @@ exports.sendVerificationEmail = async (email, token, type) => {
 
         if (type === 'password-reset') {
             subject = 'Password Reset';
-            text = `Reset your password using the following link: http://localhost:${process.env.PORT}/api/users/reset-password?token=${token}`;
-            html = `<p>Reset your password using the following link: <a href="http://localhost:${process.env.PORT}/api/users/reset-password?token=${token}">Reset Password</a></p>`;
+            text = `Reset your password using the following link: ${process.env.WEBSITE_URL}/reset-password?token=${token}`;
+            html = `<p>Reset your password using the following link: <a href="${process.env.WEBSITE_URL}/reset-password?token=${token}">Reset Password</a></p>`;
         } else if (type === 'email-verification') {
             subject = 'Email Verification';
             text = `Your verification code is: ${token}`;
             html = `<p>Your verification code is: <strong>${token}</strong></p>`;
-        } else if (type === 'email-change') {  // New case for email change
+        } else if (type === 'email-change') { 
             subject = 'Email Change Verification';
             text = `Your email change verification code is: ${token}`;
             html = `<p>Your email change verification code is: <strong>${token}</strong></p>`;
@@ -30,8 +30,8 @@ exports.sendVerificationEmail = async (email, token, type) => {
         }
 
         const mailOptions = {
-            from: process.env.EMAIL_USER, // Sender address
-            to: email,                    // Recipient address
+            from: process.env.EMAIL_USER,
+            to: email,                    
             subject,
             text,
             html

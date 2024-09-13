@@ -8,7 +8,8 @@ const adminSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
     verificationCode: { type: String },
     verificationCodeExpiry: { type: Date },
-    isVerified: { type: Boolean, default: false }
+    isVerified: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: true }
 }, { timestamps: true });
 
 // Hash the password before saving the admin

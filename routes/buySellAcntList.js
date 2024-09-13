@@ -1,21 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const BuySellAccountList = require('../models/buySellAcntList');
-const { createAccount, allAccount, idGetAccount } = require('../controllers/buySellAcntList');
+const { createAccount, allAccount, idGetAccount, allAccountADmin } = require('../controllers/buySellAcntList');
+const authenticate = require('../middlewares/authMiddleware'); 
+const adminMiddleware = require('../middlewares/adminMiddleware');
 
-// Create a new account
-router.post('/create', createAccount)
-
-
-// Get all accounts (allFetch)
-router.get('/all', allAccount);
-
-// Get account details by ID
-router.get('/:id', idGetAccount);
+router.post('/create',  authenticate , adminMiddleware  ,createAccount)
 
 
-// Update an account by ID
-router.put('/update/:id', async (req, res) => {
+router.get('/all',    allAccount);
+router.get('/allAdmin', authenticate , adminMiddleware ,    allAccountADmin);
+
+router.get('/:id' , idGetAccount);
+
+
+router.put('/update/:id', authenticate , adminMiddleware  , async (req, res) => {
     try {
         const updatedAccount = await BuySellAccountList.findOneAndUpdate({ accountId: req.params.id }, req.body, { new: true });
         if (!updatedAccount) return res.status(404).json({ error: "Account not found" });
@@ -25,8 +24,7 @@ router.put('/update/:id', async (req, res) => {
     }
 });
 
-// Delete an account by ID
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', authenticate , adminMiddleware , async (req, res) => {
     try {
         const deletedAccount = await BuySellAccountList.findOneAndDelete({ accountId: req.params.id });
         if (!deletedAccount) return res.status(404).json({ error: "Account not found" });
