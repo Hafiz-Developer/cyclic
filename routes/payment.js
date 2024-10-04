@@ -1,13 +1,12 @@
-// routes/payment.js
 const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const { createPayment, getAllPayments } = require('../controllers/payment');
+const app = express();
+const routePayment = require('../controllers/routePayment');
 const authenticate = require('../middlewares/authMiddleware'); 
+const adminMiddleware = require('../middlewares/adminMiddleware');
 
-const storage = multer.diskStorage({});
-const upload = multer({ storage });
+app.get('/', authenticate , routePayment.loadPayment);
+app.post('/paymentCharge', authenticate , routePayment.paymentCharge);
+app.get('/allPayment', authenticate, routePayment.getAll)
+app.get('/allUsers', authenticate , adminMiddleware , routePayment.getUsers)
 
-router.post('/', authenticate , upload.single('paymentPic'), createPayment);
-router.get('/all' , authenticate ,getAllPayments)
-module.exports = router;
+module.exports = app;

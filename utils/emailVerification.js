@@ -25,7 +25,7 @@ exports.sendVerificationEmail = async (email, token, type) => {
             text = `Your email change verification code is: ${token}`;
             html = `<p>Your email change verification code is: <strong>${token}</strong></p>`;
         } else {
-            console.error('Unknown email type:', type);
+            // console.error('Unknown email type:', type);
             throw new Error('Unknown email type');
         }
 
@@ -38,9 +38,27 @@ exports.sendVerificationEmail = async (email, token, type) => {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log(`${subject} email sent to:`, email);
+        // console.log(`${subject} email sent to:`, email);
     } catch (error) {
-        console.error('Error sending email:', error);
+        // console.error('Error sending email:', error);
         throw new Error('Could not send verification email.');
     }
+};
+
+ exports.sendPaymentEmail = async (email, sellerEmail, adminEmail, amount , fullName) => {
+    const subject = 'Payment Notification';
+    const text = `Payment of amount $${amount} has been successfully completed From Buyer. ${fullName}`;
+    const html = `<p>Payment of amount <strong>$${amount}</strong> has been successfully completed From Buyer <strong> ${fullName}</strong>.</p>`;
+
+    const mailOptions = {
+
+        from: process.env.EMAIL_USER,
+        to: [email, sellerEmail, adminEmail], 
+        subject,
+        text,
+        html,
+    };
+
+    await transporter.sendMail(mailOptions);
+    // console.log(`Payment notification emails sent to: ${email}, ${sellerEmail}, ${adminEmail}`);
 };

@@ -4,12 +4,12 @@ const Scammer = require('../models/scammer');
 exports.uploadScammerImages = async (req, res) => {
   try {
     // Check if required fields are provided
-    const { sName, sContactNumber, sCountry, sAccountdeal, sDealingTime } = req.body;
-    if (!sName || !sContactNumber || !sCountry || !sAccountdeal || !sDealingTime) {
+    const { sName, sContactNumber, sCountry, sAccountdeal, sDealingTime , sLink1 , sLink2 } = req.body;
+    if (!sName || !sContactNumber || !sCountry || !sAccountdeal || !sDealingTime || !sLink1) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
     
-    if (!req.files || req.files.length < 5) {
+    if (!req.files || req.files.length <= 1) {
       return res.status(400).json({ message: 'At least 5 images are required' });
     }
 
@@ -21,6 +21,8 @@ exports.uploadScammerImages = async (req, res) => {
       sCountry,
       sAccountdeal,
       sDealingTime,
+      sLink1,
+      sLink2,
       sPics: images, // This should be an array of URLs
     });
 
@@ -34,7 +36,7 @@ exports.uploadScammerImages = async (req, res) => {
 // Get all scammers
 exports.getAllScammers = async (req, res) => {
   try {
-    const scammers = await Scammer.find();
+    const scammers = await Scammer.find().sort({createdAt : -1});
     res.status(200).json(scammers);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving scammers', error });

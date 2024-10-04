@@ -9,7 +9,7 @@ exports.createBuySell = async (req, res) => {
             ProfitMargin, PageViews, ProfitMultiple, RevenueMultiple , ContactNumber
         } = req.body;
 
-        if (!req.files || req.files.length < 2 ||  req.files.length > 5) {
+        if (!req.files || req.files.length < 1 ||  req.files.length > 5) {
             return res.status(400).json({ message: "Please upload between 2 and 5 images." });
         }
 

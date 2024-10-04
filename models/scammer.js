@@ -22,6 +22,8 @@ const scammerSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'Scammer dealing time is required']
     },
+    sLink1: { type: String },
+    sLink2: { type: String },
     sPics: {
         type: [String],
         required: [true, 'Scammer pictures are required']

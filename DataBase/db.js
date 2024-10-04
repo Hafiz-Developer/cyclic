@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require('dotenv').config();
 
-const MONGO_DB_URL = process.env.MONGO_DB;
+const MONGO_DB_URL = process.env.MONGO_DB_URL;
 const connectDb = () => {
     mongoose.connect(`${MONGO_DB_URL}`, {
         dbName: "SeoBackend",

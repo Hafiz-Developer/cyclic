@@ -19,10 +19,10 @@ const buySellSchema = new mongoose.Schema({
     ContactNumber: { type: Number, required: true },
     siteAge: { type: Number, required: true },
     MonthlyProfit: { type: Number, required: true },
-    ProfitMargin: { type: Number, required: true },
+    ProfitMargin: { type: Number},
     PageViews: { type: Number, required: true },
-    ProfitMultiple: { type: String, required: true },
-    RevenueMultiple: { type: String, required: true },
+    ProfitMultiple: { type: String },
+    RevenueMultiple: { type: String},
     createdAt: {
         type: Date,
         default: Date.now
