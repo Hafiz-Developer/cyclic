@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
             return res.status(401).json({ message: "Authorization denied. User not found." });
         }
 
-        req.user = user; // This line is crucial
+        req.user = user; 
         next();
     } catch (error) {
         res.status(401).json({ message: "Authorization denied. Please login first." });

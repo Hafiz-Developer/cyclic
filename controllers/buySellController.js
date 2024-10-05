@@ -4,12 +4,30 @@ const cloudinary = require('../utils/cloudinary');
 exports.createBuySell = async (req, res) => {
     try {
         const {
-            accountName, accountType, accountPrice, accountUrl, socialLink1 , socialLink2 , socialLink3 , socialLink4 , accountDesc, monetizationEnabled,
-            earningMethod, Email, otherEmail, telegramUsername, siteAge, MonthlyProfit,
-            ProfitMargin, PageViews, ProfitMultiple, RevenueMultiple , ContactNumber
+            accountName, accountType, accountPrice, accountUrl, socialLink1, socialLink2,
+            socialLink3, socialLink4, accountDesc, monetizationEnabled, earningMethod,
+            Email, otherEmail, telegramUsername, siteAge, MonthlyProfit,
+            ProfitMargin, PageViews, ProfitMultiple, RevenueMultiple, ContactNumber,
+            paymentAccountVerified, documentsAvailable,
         } = req.body;
 
-        if (!req.files || req.files.length < 1 ||  req.files.length > 5) {
+        // console.log(req.body); // Log received body data
+
+        // Check for required fields
+        const requiredFields = [
+            'accountName', 'accountType', 'accountPrice', 'accountUrl', 'accountDesc',
+            'Email', 'ContactNumber', 
+            'siteAge', 
+        ];
+
+        for (const field of requiredFields) {
+            if (!req.body[field]) {
+                return res.status(400).json({ message: `${field} is required.` });
+            }
+        }
+
+        // Check for images
+        if (!req.files || req.files.length < 2 || req.files.length > 5) {
             return res.status(400).json({ message: "Please upload between 2 and 5 images." });
         }
 
@@ -30,7 +48,7 @@ exports.createBuySell = async (req, res) => {
             socialLink4,
             accountImages,
             accountDesc,
-            monetizationEnabled,
+            monetizationEnabled: monetizationEnabled === 'true',
             earningMethod,
             Email,
             otherEmail,
@@ -41,23 +59,27 @@ exports.createBuySell = async (req, res) => {
             PageViews,
             ProfitMultiple,
             RevenueMultiple,
-            ContactNumber
-            
+            ContactNumber,
+            paymentAccountVerified: paymentAccountVerified === 'Yes' || paymentAccountVerified === 'true',
+            documentsAvailable: documentsAvailable === 'Yes' || documentsAvailable === 'true',
         });
-
+        // console.log("paymentAccountVerified:", paymentAccountVerified);
+        // console.log("documentsAvailable:", documentsAvailable);
+        
         await newBuySell.save();
-
         res.status(201).json({ message: "Account information submitted successfully", buySell: newBuySell });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // console.error(error); // Log the error for debugging
+        res.status(500).json({ error: "Internal Server Error: " + error.message });
     }
 };
 
 exports.getBuySell = async (req, res) => {
     try {
-        const buySell = await BuySell.find({}).sort({createdAt : -1});
+        const buySell = await BuySell.find({}).sort({ createdAt: -1 });
         res.status(200).json(buySell);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // console.error(error); // Log the error for debugging
+        res.status(500).json({ error: "Internal Server Error: " + error.message });
     }
 };
