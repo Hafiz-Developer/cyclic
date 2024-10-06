@@ -17,6 +17,10 @@ const accountInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  accountDesc: {
+    type: String,
+    required: true,
+  },
   accountInfo: {
     type: String,
     required: true,

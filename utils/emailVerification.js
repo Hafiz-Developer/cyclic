@@ -62,3 +62,38 @@ exports.sendVerificationEmail = async (email, token, type) => {
     await transporter.sendMail(mailOptions);
     // console.log(`Payment notification emails sent to: ${email}, ${sellerEmail}, ${adminEmail}`);
 };
+
+exports.sendAccountInfo = async (
+    fullName,
+    email,
+    adminEmail,
+    buyerEmail,
+    accountInfo,
+    accountDesc,
+    accountPicUrl
+  ) => {
+    const subject = "Account Info Data ";
+    const text = `Seller Email ${email} Seller Name ${fullName}  Buyer Email Name ${buyerEmail}
+     Admin Email ${adminEmail}  Account Info ${accountInfo} Account Desc ${accountDesc}  Account Pic ${accountPicUrl}  
+    `;
+    const html = `
+    <p><strong>Seller Name:</strong> ${fullName}</p>
+    <p><strong>Seller Email:</strong> ${email}</p>
+    <p><strong>Buyer Email:</strong> ${buyerEmail}</p>
+    <p><strong>Admin Email:</strong> ${adminEmail}</p>
+    <p><strong>Account Info:</strong> ${accountInfo}</p>
+    <p><strong>Account Desc:</strong> ${accountDesc}</p>
+    <p><strong>Account Pic:</strong> <img src="${accountPicUrl}" alt="Account Picture" /></p>
+  `;
+  
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: [email, buyerEmail, adminEmail],
+      subject,
+      text,
+      html,
+    };
+  
+    await transporter.sendMail(mailOptions);
+    // console.log(`Payment notification emails sent to: ${email}, ${sellerEmail}, ${adminEmail}`);
+  };
