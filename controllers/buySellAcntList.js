@@ -1,6 +1,6 @@
 const BuySellAccountList = require("../models/buySellAcntList");
-
-
+const UserView = require('../models/UserView'); // Add this import
+const Report = require('../models/Report'); // Import the Report model
 exports.createAccount = async (req, res) => {
     try {
         const newAccount = new BuySellAccountList(req.body);
@@ -19,10 +19,17 @@ exports.allAccount = async (req, res) => {
             accountId: 1,
             accountName: 1,
             accountPrice: 1,
-            accountUrl: 1,
             siteAge: 1,
+            accountDesc:1,
+            MonthlyProfit:1,
+            ProfitMargin:1,
+            imagesUpload1:1,
+            createdAt:1,
+            PageViews:1,
+            reportAccount:1,
+            monetizationEnabled:1,
             _id: 1
-        });
+        }).sort({createdAt: - 1});
 
         const formattedAccounts = accounts.map(account => ({
             sellerDetails: {
@@ -30,12 +37,19 @@ exports.allAccount = async (req, res) => {
                 SellerFullName: account.SellerFullName,
                 _id: account._id
             },
+            monetizationEnabled:account.monetizationEnabled,
+            reportAccount:account.reportAccount,
+            PageViews:account.PageViews,
             accountType: account.accountType,
             accountName: account.accountName,
             accountPrice: account.accountPrice,
-            accountUrl: account.accountUrl,
             siteAge: account.siteAge,
-            accountId: account.accountId
+            accountId: account.accountId,
+            accountDesc: account.accountDesc,
+            MonthlyProfit: account.MonthlyProfit,
+            ProfitMargin: account.ProfitMargin,
+            createdAt: account.createdAt,
+            imagesUpload1: account.imagesUpload1
         }));
 
         res.status(200).json(formattedAccounts);
@@ -65,6 +79,7 @@ exports.idGetAccount = async (req, res) => {
                 _id: account._id
             },
             accountType: account.accountType,
+            reportAccount: account.reportAccount,
             accountName: account.accountName,
             accountPrice: account.accountPrice,
             accountUrl: account.accountUrl,
@@ -91,3 +106,59 @@ exports.idGetAccount = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+
+
+exports.incrementViewCount = async (req, res) => {
+    const { userId, accountId } = req.body; 
+    console.log("Received userId:", userId, "and accountId:", accountId); // Debugging
+
+    try {
+        const existingView = await UserView.findOne({ userId, accountId });
+
+        if (!existingView) {
+            await BuySellAccountList.findOneAndUpdate(
+                { accountId },
+                { $inc: { PageViews: 1 } },
+                { new: true }
+            );
+
+            const newView = new UserView({ userId, accountId });
+            await newView.save();
+
+            return res.status(200).json({ message: "View count updated" });
+        } else {
+            return res.status(200).json({ message: "View already counted" });
+        }
+    } catch (error) {
+        console.error("Error in incrementViewCount:", error); // Debugging
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+exports.reportAccount = async (req, res) => {
+    const { userId, accountId } = req.body; 
+    console.log("Received userId:", userId, "and accountId:", accountId); // Debugging
+
+    try {
+        const existingReport = await Report.findOne({ userId, accountId });
+
+        if (!existingReport) {
+            await BuySellAccountList.findOneAndUpdate(
+                { accountId },
+                { $inc: { reportAccount: 1 } }, // Increment report count
+                { new: true }
+            );
+
+            const newReport = new Report({ userId, accountId });
+            await newReport.save();
+
+            return res.status(200).json({ message: "Report submitted and account count updated" });
+        } else {
+            return res.status(200).json({ message: "Account already reported" });
+        }
+    } catch (error) {
+        console.error("Error in reportAccount:", error); // Debugging
+        res.status(400).json({ error: error.message });
+    }
+};

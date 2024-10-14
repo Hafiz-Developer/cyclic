@@ -14,7 +14,8 @@ const buySellAcntlistSchema = new mongoose.Schema({
     SellerFullName: { type: String, required: true },
     MonthlyProfit: { type: String },
     ProfitMargin: { type: String },
-    PageViews: { type: String },
+    PageViews: { type: Number, default: 0 },
+    reportAccount: { type: Number, default: 0 },
     ProfitMultiple: { type: String },
     RevenueMultiple: { type: String },
     imagesUpload1: { type: String },  
@@ -22,6 +23,10 @@ const buySellAcntlistSchema = new mongoose.Schema({
     imagesUpload3: { type: String },
     imagesUpload4: { type: String },
     imagesUpload5: { type: String },
+    createdAt: {
+        type: Date,
+        default: Date.now
+      }
 }, { timestamps: true });
 
 // Before saving, generate a unique accountId
